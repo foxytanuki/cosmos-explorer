@@ -1,0 +1,22 @@
+{
+    "chain_name": "mycel-dev",
+    "api": [
+        {"provider": "Seed", "address": "https://lcd.seed.dev.mycel.domains"}
+    ],
+    "rpc": [
+        {"provider": "Seed", "address": "https://rpc.seed.dev.mycel.domains:443"}
+    ],
+    "sdk_version": "0.47.6",
+    "coin_type": "118",
+    "min_tx_fee": "8000",
+    "assets": [{
+        "base": "umycel",
+        "symbol": "MYCEL",
+        "exponent": "6",
+        "coingecko_id": "",
+        "logo": "/logos/mycel.svg"
+    }],
+    "addr_prefix": "mycel",
+    "theme_color": "#161723",
+    "logo": "/logos/mycel.svg"
+}
