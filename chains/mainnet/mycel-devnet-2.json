@@ -1,5 +1,5 @@
 {
-    "chain_name": "mycel-dev",
+    "chain_name": "mycel-dev-2",
     "api": [
         {"provider": "Seed", "address": "https://lcd.seed.dev.mycel.id"}
     ],
