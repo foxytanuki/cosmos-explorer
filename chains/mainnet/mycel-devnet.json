@@ -1,12 +1,10 @@
 {
     "chain_name": "mycel-dev",
     "api": [
-        {"provider": "Seed", "address": "https://lcd.seed.dev.mycel.domains"},
-        {"provider": "FT", "address": "https://lcd.node0.mycel-dev.foxytanuki.dev/"}
+        {"provider": "Seed", "address": "https://lcd.seed.dev.mycel.domains"}
     ],
     "rpc": [
-        {"provider": "Seed", "address": "https://rpc.seed.dev.mycel.domains:443"},
-        {"provider": "FT", "address": "https://api.node0.mycel-dev.foxytanuki.dev/"}
+        {"provider": "Seed", "address": "https://rpc.seed.dev.mycel.domains:443"}
     ],
     "sdk_version": "0.47.6",
     "coin_type": "118",
