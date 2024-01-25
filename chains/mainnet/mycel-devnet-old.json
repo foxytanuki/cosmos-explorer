@@ -1,10 +1,10 @@
 {
-    "chain_name": "mycel-dev-2",
+    "chain_name": "mycel-dev-old",
     "api": [
-        {"provider": "Seed", "address": "https://lcd.seed.dev.mycel.id"}
+        {"provider": "Seed", "address": "https://lcd.seed.dev.mycel.domains"}
     ],
     "rpc": [
-        {"provider": "Seed", "address": "https://api.seed.dev.mycel.id"}
+        {"provider": "Seed", "address": "https://rpc.seed.dev.mycel.domains:443"}
     ],
     "sdk_version": "0.47.6",
     "coin_type": "118",
