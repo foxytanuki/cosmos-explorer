@@ -1,0 +1,22 @@
+{
+  "chain_name": "local",
+  "api": [
+      {"provider": "Seed", "address": "http://0.0.0.0:1317"}
+  ],
+  "rpc": [
+      {"provider": "Seed", "address": "https://0.0.0.0:25567"}
+  ],
+  "sdk_version": "0.47.6",
+  "coin_type": "118",
+  "min_tx_fee": "8000",
+  "assets": [{
+      "base": "umycel",
+      "symbol": "MYCEL",
+      "exponent": "6",
+      "coingecko_id": "",
+      "logo": "https://raw.githubusercontent.com/mycel-domain/mycel-dashboard/f76144d06c0895f7ea3aa69179988528f8e3a7c8/src/assets/mycel_charactor.svg"
+  }],
+  "addr_prefix": "mycel",
+  "theme_color": "#161723",
+  "logo": "https://raw.githubusercontent.com/mycel-domain/mycel-dashboard/f76144d06c0895f7ea3aa69179988528f8e3a7c8/src/assets/mycel_charactor.svg"
+}
