@@ -1,12 +1,12 @@
 {
     "chain_name": "mycel-test",
     "api": [
-        {"provider": "Seed", "address": "https://lcd.seed.shugyo.mycel.domains"}
+        {"provider": "Seed", "address": "https://lcd.shugyo.mycel.id"}
     ],
     "rpc": [
-        {"provider": "Seed", "address": "https://rpc.seed.shugyo.mycel.domains:443"}
+        {"provider": "Seed", "address": "https://rpc.shugyo.mycel.id"}
     ],
-    "sdk_version": "0.47.6",
+    "sdk_version": "0.50.3",
     "coin_type": "118",
     "min_tx_fee": "8000",
     "assets": [{
