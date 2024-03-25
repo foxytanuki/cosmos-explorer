@@ -12,6 +12,7 @@ import { onMounted, ref } from 'vue';
 import { Icon } from '@iconify/vue';
 import type { Key, SlashingParam, Validator } from '@/types';
 import { formatSeconds}  from '@/libs/utils'
+import { diff } from 'semver';
 
 const staking = useStakingStore();
 const base = useBaseStore();
@@ -26,7 +27,7 @@ const latest = ref({} as Record<string, number>);
 const yesterday = ref({} as Record<string, number>);
 const tab = ref('active');
 const unbondList = ref([] as Validator[]);
-const slashing =ref({} as SlashingParam)
+const slashing = ref({} as SlashingParam)
 
 onMounted(() => {
     staking.fetchUnbondingValdiators().then((res) => {
@@ -40,12 +41,12 @@ onMounted(() => {
     })
 });
 
-async function fetchChange() {
+async function fetchChange(blockWindow: number = 14400) {
     let page = 0;
 
     let height = Number(base.latest?.block?.header?.height || 0);
-    if (height > 14400) {
-        height -= 14400;
+    if (height > blockWindow) {
+        height -= blockWindow;
     } else {
         height = 1;
     }
@@ -81,24 +82,35 @@ const changes = computed(() => {
     return changes;
 });
 
-const change24 = (key: Key) => {
-    const txt = key.key;
+const change24 = (entry: { consensus_pubkey: Key; tokens: string }) => {
+    const txt = entry.consensus_pubkey.key;
     // const n: number = latest.value[txt];
     // const o: number = yesterday.value[txt];
     // // console.log( txt, n, o)
     // return n > 0 && o > 0 ? n - o : 0;
-    return changes.value[txt];
+
+    const latestValue = latest.value[txt];
+    if (!latestValue) {
+        return 0;
+    }
+
+    const displayTokens = format.tokenAmountNumber({
+        amount: parseInt(entry.tokens, 10).toString(),
+        denom: staking.params.bond_denom,
+    });
+    const coefficient = displayTokens / latestValue;
+    return changes.value[txt] * coefficient;
 };
 
-const change24Text = (key?: Key) => {
-    if (!key) return '';
-    const v = change24(key);
+const change24Text = (entry: { consensus_pubkey: Key; tokens: string }) => {
+    if (!entry) return '';
+    const v = change24(entry);
     return v && v !== 0 ? format.showChanges(v) : '';
 };
 
-const change24Color = (key?: Key) => {
-    if (!key) return '';
-    const v = change24(key);
+const change24Color = (entry: { consensus_pubkey: Key; tokens: string }) => {
+    if (!entry) return '';
+    const v = change24(entry);
     if (v > 0) return 'text-success';
     if (v < 0) return 'text-error';
 };
@@ -197,7 +209,17 @@ const logo = (identity?: string) => {
         : `https://s3.amazonaws.com/keybase_processed_uploads/${url}`;
 };
 
-fetchChange();
+const loaded = ref(false);
+base.$subscribe((_, s) => {
+    if (s.recents.length >= 2 && loaded.value === false) {
+        loaded.value = true;
+        const diff_time = Date.parse(s.recents[1].block.header.time) - Date.parse(s.recents[0].block.header.time)
+        const diff_height = Number(s.recents[1].block.header.height) - Number(s.recents[0].block.header.height)
+        const block_window = Number(Number(86400 * 1000 * diff_height / diff_time).toFixed(0))
+        fetchChange(block_window);
+    }
+});
+
 loadAvatars();
 </script>
 <template>
@@ -405,9 +427,9 @@ loadAvatars();
                             <!-- 👉 24h Changes -->
                             <td
                                 class="text-right text-xs"
-                                :class="change24Color(v.consensus_pubkey)"
+                                :class="change24Color(v)"
                             >
-                                {{ change24Text(v.consensus_pubkey) }}
+                                {{ change24Text(v) }}
                             </td>
                             <!-- 👉 commission -->
                             <td class="text-right text-xs">

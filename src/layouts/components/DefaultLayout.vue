@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Icon } from '@iconify/vue';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 // Components
 import newFooter from '@/layouts/components/NavFooter.vue';
@@ -9,16 +9,18 @@ import NavbarSearch from '@/layouts/components/NavbarSearch.vue';
 import ChainProfile from '@/layouts/components/ChainProfile.vue';
 
 import { useDashboard } from '@/stores/useDashboard';
-import { useBlockchain } from '@/stores';
+import { useBaseStore, useBlockchain } from '@/stores';
 
 import NavBarI18n from './NavBarI18n.vue';
 import NavBarWallet from './NavBarWallet.vue';
 import type { NavGroup, NavLink, NavSectionTitle, VerticalNavItems } from '../types';
+import dayjs from 'dayjs';
 
 const dashboard = useDashboard();
 dashboard.initial();
 const blockchain = useBlockchain();
 blockchain.randomSetupEndpoint();
+const baseStore = useBaseStore();
 
 const current = ref(''); // the current chain
 const temp = ref('')
@@ -56,6 +58,17 @@ function selected(route: any, nav: NavLink) {
   const b = route.path === nav.to?.path || route.path.startsWith(nav.to?.path) && nav.title.indexOf('dashboard') === -1
   return b
 }
+const blocktime = computed(() => {
+  return dayjs(baseStore.latest?.block?.header?.time)
+});
+
+const behind = computed(() => {
+  const current = dayjs().subtract(10, 'minute')
+  return blocktime.value.isBefore(current)
+});
+
+dayjs()
+
 </script>
 
 <template>
@@ -89,12 +102,13 @@ function selected(route: any, nav: NavLink) {
           :tabindex="index"
           class="collapse"
           :class="{
-            'collapse-arrow': item?.children?.length > 0,
+            'collapse-arrow':index > 0 && item?.children?.length > 0,
             'collapse-open': index === 0 && sidebarOpen,
             'collapse-close': index === 0 && !sidebarOpen,
           }"
         >
           <input
+            v-if="index > 0"
             type="checkbox"
             class="cursor-pointer !h-10 block"
             @click="changeOpen(index)"
@@ -253,6 +267,16 @@ function selected(route: any, nav: NavLink) {
 
       <!-- 👉 Pages -->
       <div style="min-height: calc(100vh - 180px);">
+          <div v-if="behind" class="alert alert-error mb-4">
+              <div class="flex gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                      class="stroke-current flex-shrink-0 w-6 h-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
+                  <span>{{ $t('pages.out_of_sync') }} {{ blocktime.format() }} ({{ blocktime.fromNow() }})</span>
+              </div>
+          </div>
         <RouterView v-slot="{ Component }">
           <Transition mode="out-in">
             <Component :is="Component" />
