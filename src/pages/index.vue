@@ -28,7 +28,7 @@ const chains = computed(() => {
 });
 
 const featured = computed(() => {
-  const names = ["mycel-dev", "mycel-test"];
+  const names = ["mycel-shugyo", "mycel-dev"];
   return chains.value
     .filter(x => names.includes(x.chainName))
     .sort((a, b)=> (names.indexOf(a.chainName) - names.indexOf(b.chainName)))
